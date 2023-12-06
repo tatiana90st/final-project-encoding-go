@@ -27,33 +27,6 @@ type MyEncoder interface {
 	Encoding() error
 }
 
-func EmptyDockerCompose() models.DockerCompose {
-	var ports []string
-	var volumes []string
-	var links []string
-	web := models.Web{
-		Build:   "",
-		Ports:   ports,
-		Volumes: volumes,
-		Links:   links,
-	}
-	var environment []string
-	database := models.Database{
-		Image:       "",
-		Environment: environment,
-		Volumes:     volumes,
-	}
-	services := models.Services{
-		Web:      web,
-		Database: database,
-	}
-	dockerCompose := models.DockerCompose{
-		Version:  "3",
-		Services: services,
-	}
-	return dockerCompose
-}
-
 // Encoding перекодирует файл из JSON в YAML
 func (j *JSONData) Encoding() error {
 	var data []byte
@@ -61,7 +34,7 @@ func (j *JSONData) Encoding() error {
 	if err != nil {
 		return err
 	}
-	dockerCompose := EmptyDockerCompose()
+	var dockerCompose models.DockerCompose
 	j.DockerCompose = &dockerCompose
 	err = json.Unmarshal(data, j.DockerCompose)
 	if err != nil {
@@ -85,7 +58,7 @@ func (y *YAMLData) Encoding() error {
 	if err != nil {
 		return err
 	}
-	dockerCompose := EmptyDockerCompose()
+	var dockerCompose models.DockerCompose
 	y.DockerCompose = &dockerCompose
 	err = yaml.Unmarshal(data, y.DockerCompose)
 	if err != nil {
